@@ -16,7 +16,13 @@
     "eslint-config-next": "13.3.0",
     "next": "13.3.0",
     "react": "18.2.0",
+    "react-datepicker": "^4.11.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
+    "sass": "^1.62.0",
     "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "@types/react-datepicker": "^4.10.0"
   }
 }
