@@ -1,13 +1,19 @@
 import Head from 'next/head'
-import { Open_Sans } from 'next/font/google'
+import { Roboto } from 'next/font/google'
 import styles from '@/styles/Home.module.scss'
 import Link from 'next/link'
 import Form from '@/components/Form/Form'
+import { useContext, useState } from 'react'
 
-const openSans = Open_Sans({ subsets: ['latin'] })
-
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+})
 
 export default function Home() {
+  const handleFormSubmit = (data: any) => {
+    console.log(data)
+  }
   return (
     <>
       <Head>
@@ -18,10 +24,23 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className={styles.description}>
-          <h1 className={`${openSans.className} ${styles.description__title}`}> HRnet </h1>
-          <Link href="employees" className={styles.description__link}>View current employees</Link>
+          <h1 className={`${roboto.className} ${styles.description__title}`}>
+            {' '}
+            HRnet{' '}
+          </h1>
         </div>
-        <Form />
+        <div className={styles.container}>
+          <h2 className={`${roboto.className} ${styles.container__title}`}>
+            Create Employee
+          </h2>
+          <Link
+            href="employees"
+            className={`${roboto.className} ${styles.btn}`}
+          >
+            View current employees
+          </Link>
+        </div>
+        <Form  />
       </main>
     </>
   )

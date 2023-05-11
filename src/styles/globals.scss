@@ -6,7 +6,8 @@
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
 
   --primary-color: #2473cd;
-  --hover-color:  #52a2f3;
+  --hover-color:  #ffffff;
+  --shadow-color: #00000030;
 }
 
 * {
@@ -43,3 +44,13 @@ a {
   }
 }
  */
+
+ html {
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
