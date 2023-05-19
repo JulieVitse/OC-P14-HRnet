@@ -23,27 +23,10 @@ body {
   background: rgb(233, 233, 233);
 }
 
-/* body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-} */
-
 a {
   color: inherit;
   text-decoration: none;
 }
-
-/* @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
- */
 
  html {
   font-family: sans-serif;
@@ -53,4 +36,25 @@ a {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+.btn {
+  align-self: center;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.7rem 2rem;
+  border: none;
+  border-radius: 5px;
+  background: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.425),
+    inset 0 0 0 0 rgba(0, 0, 0, 0);
+  transition: all 300ms ease-in-out;
+  &:hover {
+    color: var(--primary-color);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0),
+      inset 2px 2px 10px 0 var(--shadow-color);
+    background-color: var(--hover-color);
+  }
 }

@@ -21,7 +21,8 @@ export const FormDataProvider = ({ children }: any) => {
         /* const updatedData = [...employeeData, newUser]
         setEmployeeData(updatedData) */
         setEmployeeData((employeeData) => [...employeeData, newUser])
-        //localStorage.setItem('formData', JSON.stringify(employeeData))
+        employeeData.push(newUser)
+        localStorage.setItem('formData', JSON.stringify(employeeData))
         /* console.log(updatedData)
         localStorage.setItem('formData', JSON.stringify(updatedData)) */
     }

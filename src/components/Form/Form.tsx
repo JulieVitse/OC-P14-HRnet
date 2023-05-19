@@ -5,9 +5,11 @@ import Select from 'react-select'
 import { states } from '@/data/stateList'
 import { department } from '@/data/departmentList'
 import styles from '@/components/Form/Form.module.scss'
-import React, { useContext, useState } from 'react'
-import { FormDataContext } from '@/contexts/formDataContext'
+import React, { useEffect } from 'react'
+import moment from 'moment'
 
+import { useAppContext } from '@/contexts/AppContext'
+import { initialState } from '@/contexts/AppReducer'
 
 type FormInputs = {
   firstName: string
@@ -17,9 +19,9 @@ type FormInputs = {
   street: string
   city: string
   state: string
-  selectState: string
+  selectState: any
   zipCode: number
-  selectDepartment: string
+  selectDepartment: any
   department: string
 }
 
@@ -42,8 +44,6 @@ const customStyles = {
   }),
 }
 
-
-
 export default function Form() {
   const {
     control,
@@ -56,24 +56,22 @@ export default function Form() {
   maxDate.setFullYear(maxDate.getFullYear() - 18)
   const todayDate = new Date()
 
-  const { employeeData, addData } = useContext(FormDataContext)
+  const { state, dispatch } = useAppContext()
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    //console.log(data)
-    addData(data)
-    localStorage.setItem('formData', JSON.stringify(data))
+    console.log(data)
+    dispatch({ type: 'ADD_EMPLOYEE', payload: data })
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && state !== initialState) {
+      console.log(state)
+    }
+  }, [state])
 
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      {employeeData.map((item) => (
-        <div key={item.firstName}>
-          <p>{item.firstName}</p>
-          <p>{item.lastName}</p>
-        </div>
-      )
-        )}
       {/* register your input into the hook by invoking the "register" function */}
       <div className={styles.form__field}>
         <label htmlFor="firstName">First Name </label>
@@ -116,8 +114,13 @@ export default function Form() {
           render={({ field }) => (
             <DatePicker
               placeholderText="Select date"
-              onChange={(date) => field.onChange(date)}
-              selected={field.value}
+              onChange={(date) => {
+                const formattedDate = moment(date).format('DD/MM/YYYY')
+                field.onChange(formattedDate)
+              }}
+              selected={
+                field.value ? moment(field.value, 'DD/MM/YYYY').toDate() : null
+              }
               maxDate={maxDate}
               dateFormat="dd/MM/yyyy"
               className={
@@ -145,8 +148,13 @@ export default function Form() {
           render={({ field }) => (
             <DatePicker
               placeholderText="Select date"
-              onChange={(date) => field.onChange(date)}
-              selected={field.value}
+              onChange={(date) => {
+                const formattedDate = moment(date).format('DD/MM/YYYY')
+                field.onChange(formattedDate)}
+              }
+              selected={
+                field.value ? moment(field.value, 'DD/MM/YYYY').toDate() : null
+              }
               maxDate={todayDate}
               dateFormat="dd/MM/yyyy"
               className={

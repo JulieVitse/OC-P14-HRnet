@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import Link from 'next/link'
 import styles from '../styles/Employees.module.scss'
 
 import { CompactTable } from '@table-library/react-table-library/compact'
@@ -6,63 +7,65 @@ import { useTheme } from '@table-library/react-table-library/theme'
 import { getTheme } from '@table-library/react-table-library/baseline'
 import { useSort } from '@table-library/react-table-library/sort'
 
-import { FormDataContext } from '@/contexts/formDataContext'
-import { set } from 'react-hook-form'
+import { useAppContext } from '@/contexts/AppContext'
+
+import { EmployeeTable } from '../components/Table/Table'
+import next from 'next/types'
+
+type Props = {
+  id: string
+  firstName: string
+  lastName: string
+  startDate: Date
+  department: string
+  selectDepartment: any
+  birthDate: Date
+  street: string
+  city: string
+  state: string
+  selectState: any
+  zipCode: number
+}
+
 
 const Employees = () => {
-  const context = useContext(FormDataContext)
+  const { state } = useAppContext()
+  const employees = state.employees
 
-  const [ employee, setEmployee ] = useState(context)
+  const [search, setSearch] = useState('')
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const dataFromStorage = localStorage.getItem('formData')
-      if (dataFromStorage) {
-        setEmployee(JSON.parse(dataFromStorage))
-      }
+  const handleSearch = (e: any) => {
+    setSearch(e.target.value)
+  }
+
+  const nodes = employees.map((employee: Props) => {
+    return {
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      startDate: employee.startDate,
+      department: employee.selectDepartment?.value || employee.department,
+      birthDate: employee.birthDate,
+      street: employee.street,
+      city: employee.city,
+      state: employee.selectState?.abbreviation || employee.state,
+      zipCode: employee.zipCode,
     }
-  }, [])
-
-  console.log(employee.employeeData)
-  /* console.log(context.employeeData)
-  
-  context.employeeData.map((data) => {
-    console.log(data)
   })
 
-  const getDataFromStorage = localStorage.getItem('formData')
-  if (getDataFromStorage) {
-    console.log(getDataFromStorage)
-    context.employeeData.push(JSON.parse(getDataFromStorage)) */
+  //const data = { nodes }
 
-  const nodes = [
-  {
-    id: '0',
-    firstName: 'Landon',
-    lastName: 'Linsley',
-    startDate: '09/01/2021',
-    department: 'Sales',
-    birthDate: '25/01/1990',
-    street: '1234 Main St',
-    city: 'Salt Lake City',
-    state: 'UT',
-    zipCode: 84101,
-  },
-  /* {
-    id: '1',
-    firstName: 'Tanner',
-    lastName: 'Linsley',
-    startDate: '09/01/2021',
-    department: 'Sales',
-    birthDate: '25/01/1990',
-    street: '1234 Main St',
-    city: 'Salt Lake City',
-    state: 'UT',
-    zipCode: 84101,
-  }, */
-]
+   const data = {
+     nodes: nodes.filter((item: { firstName: string; lastName: string; department: string; city: string; state: string }) =>
+       item.firstName.toLowerCase().includes(search.toLowerCase()) ||
+        item.lastName.toLowerCase().includes(search.toLowerCase()) ||
+        item.department.toLowerCase().includes(search.toLowerCase()) ||
+        item.city.toLowerCase().includes(search.toLowerCase()) ||
+        item.state.toLowerCase().includes(search.toLowerCase())
+     ),
+   }
 
-  const data = { nodes }
+  console.log(data)
+  console.log(search)
 
   const theme = useTheme([
     getTheme(),
@@ -70,7 +73,22 @@ const Employees = () => {
       Table: `
         --data-table-library_grid-template-columns:  repeat(9, auto);
         width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(63, 63, 68, 0.05);
       `,
+      HeaderCell: `
+        font-size: 14px;
+        transition: background-color 0.3s ease-in-out;
+        div > div {
+          justify-content: space-between;
+        }
+        &:hover {
+          background-color: #f5f5f5;
+        }
+      `,
+      Row: `
+        font-size: 14px;
+      `
     },
   ])
 
@@ -80,6 +98,10 @@ const Employees = () => {
       onChange: onSortChange,
     },
     {
+      sortIcon: {
+        size: '10px',
+    },
+    
       sortFns: {
         FIRSTNAME: (array) =>
           array.sort((a, b) => a.firstName.localeCompare(b.firstName)),
@@ -94,8 +116,6 @@ const Employees = () => {
         CITY: (array) => array.sort((a, b) => a.city.localeCompare(b.city)),
         STATE: (array) => array.sort((a, b) => a.state.localeCompare(b.state)),
         ZIPCODE: (array) => array.sort((a, b) => a.zipCode - b.zipCode),
-        /* TASKS: (array) =>
-          array.sort((a, b) => (a.nodes || []).length - (b.nodes || []).length), */
       },
     }
   )
@@ -109,6 +129,7 @@ const Employees = () => {
       label: 'First Name',
       renderCell: (item: { firstName: string }) => item.firstName,
       sort: { sortKey: 'FIRSTNAME' },
+      
     },
     {
       label: 'Last Name',
@@ -117,7 +138,7 @@ const Employees = () => {
     },
     {
       label: 'Start Date',
-      renderCell: (item: { startDate: string }) => item.startDate,
+      renderCell: (item: { startDate: Date }) => item.startDate,
       sort: { sortKey: 'STARTDATE' },
     },
     {
@@ -127,7 +148,7 @@ const Employees = () => {
     },
     {
       label: 'Birth Date',
-      renderCell: (item: { birthDate: string }) => item.birthDate,
+      renderCell: (item: { birthDate: Date }) => item.birthDate,
       sort: { sortKey: 'BIRTHDATE' },
     },
     {
@@ -135,7 +156,9 @@ const Employees = () => {
       renderCell: (item: { street: string }) => item.street,
       sort: { sortKey: 'STREET' },
     },
-    { label: 'City', renderCell: (item: { city: string }) => item.city },
+    { label: 'City', renderCell: (item: { city: string }) => item.city,
+      sort: { sortKey: 'CITY' },
+    },
     {
       label: 'State',
       renderCell: (item: { state: string }) => item.state,
@@ -149,33 +172,17 @@ const Employees = () => {
   ]
 
   return (
-    <>
-      <CompactTable
-        columns={COLUMNS}
-        data={data}
-        theme={theme}
-        layout={{ custom: true }}
-        sort={sort}
-        className={styles.customTable}
-      />
-    </>
-    
+    <section className={styles.wrapper}>
+      <h2 className={styles.wrapper__title}>Current Employees</h2>
+     
+      <EmployeeTable />
+      <Link href="/" className='btn' style={
+        {margin: 'auto'}
+      }>
+        Return to Home
+      </Link>
+    </section>
   )
 }
 
 export default Employees
-
-/* const defaultData = [
-  {
-    firstName: 'tanner',
-    lastName: 'linsley',
-    startDate: '09/01/2021',
-    department: 'Sales',
-    birthDate: '25/01/1990',
-    street: '1234 Main St',
-    city: 'Salt Lake City',
-    state: 'UT',
-    zipCode: 84101,
-  }
-]
- */

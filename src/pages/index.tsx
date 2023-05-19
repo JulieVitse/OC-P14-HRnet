@@ -3,7 +3,6 @@ import { Roboto } from 'next/font/google'
 import styles from '@/styles/Home.module.scss'
 import Link from 'next/link'
 import Form from '@/components/Form/Form'
-import { useContext, useState } from 'react'
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -11,9 +10,6 @@ const roboto = Roboto({
 })
 
 export default function Home() {
-  const handleFormSubmit = (data: any) => {
-    console.log(data)
-  }
   return (
     <>
       <Head>

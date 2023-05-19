@@ -8,4 +8,6 @@ export interface EmployeeData {
   state: string
   zipCode: number
   department: string
+  selectDepartment: any
+  selectState: any
 }
