@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useState } from 'react'
 import { useAppContext } from '@/contexts/AppContext'
 import styles from './Table.module.scss'
 import {
@@ -16,36 +17,27 @@ import {
 import { useTheme } from '@table-library/react-table-library/theme'
 import { getTheme } from '@table-library/react-table-library/baseline'
 import { usePagination } from '@table-library/react-table-library/pagination'
-import { useState } from 'react'
+import { TableProps } from '@/types/TableProps.types'
 
-type Props = {
-  id: string
-  firstName: string
-  lastName: string
-  startDate: Date
-  department: string
-  selectDepartment: any
-  birthDate: Date
-  street: string
-  city: string
-  state: string
-  selectState: any
-  zipCode: number
-}
 
-const key = 'Composed Table'
-
+/**
+ * Table component.
+ * @returns {JSX.Element} - The table component.
+ */
 export const EmployeeTable = () => {
-  const { state } = useAppContext()
-  const employees = state.employees
+  const { state } = useAppContext() // Get the global state from the context
+  const employees = state.employees // Get the employees array from the global state
 
   const [search, setSearch] = React.useState('')
-
   const handleSearch = (e: any) => {
     setSearch(e.target.value)
   }
-
-  const nodes = employees.map((employee: Props) => {
+  /**
+   * Raw data for the table.
+   * We are using the employees array from the global state.
+   * @param {TableProps} employee - The employee object.
+   */
+  const nodes = employees.map((employee: TableProps) => {
     return {
       firstName: employee.firstName,
       lastName: employee.lastName,
@@ -58,7 +50,10 @@ export const EmployeeTable = () => {
       zipCode: employee.zipCode,
     }
   })
-
+  /**
+   * Data for the table.
+   * Filters the data defined above based on the search string.
+   */
   const data = {
     nodes: nodes.filter(
       (item: {
@@ -75,10 +70,10 @@ export const EmployeeTable = () => {
         item.state.toLowerCase().includes(search.toLowerCase())
     ),
   }
-
-  console.log(data)
-  console.log(search)
-
+  /**
+   * Theme for the table.
+   * Customizing the baseline theme from the react-table-library.
+   */
   const theme = useTheme([
     getTheme(),
     {
@@ -104,11 +99,18 @@ export const EmployeeTable = () => {
       `,
     },
   ])
-
+  /**
+   * Sort for the table.
+   * Customizing the baseline sort from the react-table-library.
+   * @param {TableProps} data - The employees data.
+   * @param {any} sortIcon - customizes the sort icon.
+   * @param {any} sortFns - the functions used to sort the data.
+   * @param {any} onChange - undefined here as it's required by the baseline sort but we don't need it.
+   */
   const sort = useSort(
     data,
     {
-      onChange: onSortChange,
+      onChange: undefined,
     },
     {
       sortIcon: {
@@ -120,10 +122,24 @@ export const EmployeeTable = () => {
           array.sort((a, b) => a.firstName.localeCompare(b.firstName)),
         LASTNAME: (array) =>
           array.sort((a, b) => a.lastName.localeCompare(b.lastName)),
-        STARTDATE: (array) => array.sort((a, b) => a.startDate - b.startDate),
+        STARTDATE: (array) =>
+          array.sort((a, b) =>
+            a.startDate
+              .split('/')
+              .reverse()
+              .join()
+              .localeCompare(b.startDate.split('/').reverse().join())
+          ),
         DEPARTMENT: (array) =>
           array.sort((a, b) => a.department.localeCompare(b.department)),
-        BIRTHDATE: (array) => array.sort((a, b) => a.birthDate - b.birthDate),
+        BIRTHDATE: (array) =>
+          array.sort((a, b) =>
+            a.birthDate
+              .split('/')
+              .reverse()
+              .join()
+              .localeCompare(b.birthDate.split('/').reverse().join())
+          ),
         STREET: (array) =>
           array.sort((a, b) => a.street.localeCompare(b.street)),
         CITY: (array) => array.sort((a, b) => a.city.localeCompare(b.city)),
@@ -132,38 +148,47 @@ export const EmployeeTable = () => {
       },
     }
   )
-
+  /**
+   * Pagination for the table.
+   * Customizing the baseline pagination from the react-table-library.
+   * @param {TableProps} data - The employees data.
+   * @param {any} state - the initial state of the pagination.
+   * @param {any} onChange - the function used to change the state of the pagination.
+   */
   const pagination = usePagination(data, {
     state: {
       page: 0,
-      size: 3,
+      size: 10,
     },
     onChange: onPaginationChange,
   })
-
+  /**
+   * Range of entries to display.
+   * @param {number} start - the start index of the entries.
+   * @param {number} end - the end index of the entries.
+   */
   const [entriesRange, setEntriesRange] = useState<{
     start: number
     end: number
   }>({ start: 1, end: Math.min(pagination.state.size, data.nodes.length) })
-
-  function onPaginationChange(action: any, state: any) {
+  /**
+   * Function to update the display of the range of entries.
+   */
+  function onPaginationChange() {
     const { page, size } = pagination.state
     const start = page * size + 1
     const end = Math.min(start + size - 1, data.nodes.length)
     setEntriesRange({ start, end })
   }
 
+  /** Array of sizes for table entries */
   const sizes = [10, 25, 50, 100]
-
-  function onSortChange(action: any, state: any) {
-    console.log(action, state)
-  }
 
   return (
     <div className={styles.tableWrapper}>
       <div className={styles.tableWrapper__head}>
         <span>
-          Page Size:{' '}
+          Show{' '}
           <select
             value={pagination.state.size}
             onChange={(e) => pagination.fns.onSetSize(Number(e.target.value))}
@@ -175,7 +200,8 @@ export const EmployeeTable = () => {
                 {size}
               </option>
             ))}
-          </select>
+          </select>{' '}
+          entries
         </span>
 
         <label htmlFor="search" className={styles.tableWrapper__label}>
@@ -209,8 +235,8 @@ export const EmployeeTable = () => {
             </Header>
 
             <Body>
-              {tableList.map((item) => (
-                <Row key={item.id} item={item}>
+              {tableList.map((item, index) => (
+                <Row key={item.lastName + index} item={item}>
                   <Cell>{item.firstName}</Cell>
                   <Cell>{item.lastName}</Cell>
                   <Cell>{item.startDate}</Cell>
@@ -253,7 +279,6 @@ export const EmployeeTable = () => {
           >
             Previous
           </button>{' '}
-          
           {pagination.state
             .getPages(data.nodes)
             .map((_: any, index: number) => (
@@ -265,8 +290,7 @@ export const EmployeeTable = () => {
                     pagination.state.page === index ? 'bold' : 'normal',
                   backgroundColor:
                     pagination.state.page === index ? '#2473cd' : 'white',
-                  color:
-                    pagination.state.page === index ? 'white' : 'black',
+                  color: pagination.state.page === index ? 'white' : 'black',
                 }}
                 onClick={() => pagination.fns.onSetPage(index)}
                 className={styles.tableBtn}

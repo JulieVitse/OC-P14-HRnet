@@ -1,7 +1,9 @@
 import Head from 'next/head'
-import { Roboto } from 'next/font/google'
-import styles from '@/styles/Home.module.scss'
 import Link from 'next/link'
+/* styles */
+import styles from '@/styles/Home.module.scss'
+import { Roboto } from 'next/font/google'
+/* components */
 import Form from '@/components/Form/Form'
 
 const roboto = Roboto({
@@ -9,6 +11,11 @@ const roboto = Roboto({
   weight: ['400', '500', '700'],
 })
 
+/**
+ * Home page
+ * @component
+ * @returns {JSX.Element} - Home page
+ */
 export default function Home() {
   return (
     <>

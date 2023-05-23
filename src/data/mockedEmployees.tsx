@@ -1,18 +1,3 @@
-export type EmployeeType = {
-  id: string
-  firstName: string
-  lastName: string
-  startDate: Date
-  department: string
-  selectDepartment: any
-  birthDate: Date
-  street: string
-  city: string
-  state: string
-  selectState: any
-  zipCode: number
-}
-
 export const mockedEmployees = [
   {
     id: '0',
@@ -46,9 +31,9 @@ export const mockedEmployees = [
     id: '2',
     firstName: 'Jacob',
     lastName: 'Johnson',
-    startDate: '03/15/2023',
+    startDate: '15/03/2023',
     department: 'Finance',
-    birthDate: '08/23/1992',
+    birthDate: '23/08/1992',
     street: '9876 Oak St',
     city: 'New York',
     state: 'NY',
@@ -60,7 +45,7 @@ export const mockedEmployees = [
     lastName: 'Williams',
     startDate: '07/10/2022',
     department: 'Human Resources',
-    birthDate: '05/14/1995',
+    birthDate: '14/05/1995',
     street: '2468 Pine St',
     city: 'Los Angeles',
     state: 'CA',
@@ -70,9 +55,9 @@ export const mockedEmployees = [
     id: '4',
     firstName: 'Oliver',
     lastName: 'Brown',
-    startDate: '02/28/2023',
+    startDate: '27/02/2023',
     department: 'Engineering',
-    birthDate: '11/30/1991',
+    birthDate: '30/11/1991',
     street: '1357 Cedar St',
     city: 'Houston',
     state: 'TX',

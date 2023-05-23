@@ -1,4 +1,4 @@
-export interface EmployeeData {
+export type FormInputs = {
   firstName: string
   lastName: string
   birthDate: Date
@@ -6,8 +6,8 @@ export interface EmployeeData {
   street: string
   city: string
   state: string
-  zipCode: number
-  department: string
-  selectDepartment: any
   selectState: any
+  zipCode: number
+  selectDepartment: any
+  department: string
 }
