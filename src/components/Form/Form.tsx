@@ -60,7 +60,6 @@ export default function Form() {
 
   // gets functions from useModal hook
   const { isOpen, openModal, closeModal, handleEscClose } = useModal()
-  handleEscClose() // closes modal on ESC key press
 
   /**
    * @function onSubmit Handles form submit
@@ -311,6 +310,7 @@ export default function Form() {
         closeModal={closeModal}
         textContent="Employee successfully created!"
         modalClass={styles.modal__custom}
+        handleEscClose={handleEscClose}
       />
     </>
   )

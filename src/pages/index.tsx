@@ -16,7 +16,7 @@ const roboto = Roboto({
  * @component
  * @returns {JSX.Element} - Home page
  */
-export default function Home() {
+export default function Home(): JSX.Element {
   return (
     <>
       <Head>
